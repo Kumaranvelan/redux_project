@@ -3,18 +3,25 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 import { useState } from "react";
 import { auth } from "../environment/environment";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSession } from "../store/session";
 
 export const Login:React.FC =() => {
 
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState<boolean>(false);
+
+
+    
 
 const handleSubmit =async() =>{
   try {
     setLoading(true);
     const values = await form.validateFields();
-    signInWithEmailAndPassword(auth,values?.email,values?.password);
+    const res = await signInWithEmailAndPassword(auth,values?.email,values?.password);
+    dispatch(setSession({ uid: res?.user.uid ?? '', email: res?.user.email ?? '' }));
    console.log("LoggedIn Successfully");
    navigate('/content')
   } catch (error) {
@@ -30,6 +37,10 @@ const handleSubmit =async() =>{
     form.resetFields();
     setLoading(false);
   }
+}
+
+const handleRegister =( ) =>{
+  navigate("/register");
 }
 
     return(
@@ -55,6 +66,7 @@ const handleSubmit =async() =>{
             </Form.Item>
             <Button htmlType="submit" type="primary" >Submit</Button>
           </Form>
+          <h2>Don't Have Authorization yet ?<a onClick={handleRegister}>SignIn</a> </h2>
         </Card>
         </div>
     )

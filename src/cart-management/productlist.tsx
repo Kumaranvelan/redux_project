@@ -1,11 +1,15 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../store/cartslice";
 import { Flex, Card, Button } from "antd";
 import laptopImg from "../assets/images/lap.jpg";
 import headphonesImg from "../assets/images/headphones.jpg";
 import mobileImg from "../assets/images/mobileeeee.jpg";
 import { useNavigate } from "react-router-dom";
+import { getStorage } from "firebase/storage";
+import { doc, setDoc, updateDoc, getFirestore, arrayUnion, getDoc, Firestore } from 'firebase/firestore';
+import { db } from "../environment/environment";
+import { getAuth } from "firebase/auth";
 
 
 const products = [
@@ -15,8 +19,26 @@ const products = [
 ];
 
 const ProductList: React.FC = () => {
-    const navigate = useNavigate();
+
+const navigate = useNavigate();
+const auth = getAuth();
+const userId = auth.currentUser?.uid;
   const dispatch = useDispatch();
+  const session = useSelector((state:any) => state.session?.isAuthenticated)
+  // const userId = session?.user; 
+
+  console.log(userId,"userIduserIduserIduserId")
+
+  const createNewCartFireSore = async ( db: Firestore,userId:string,product:any ) => {
+    const cartDoc = doc(db,'products',`${userId}`);
+    const newCart = {
+      userId,
+      product
+    };
+    await setDoc(cartDoc,newCart,{merge:true})
+  }
+
+
 
   return (
     <>
@@ -27,9 +49,12 @@ const ProductList: React.FC = () => {
             <img src={product.image} alt={product.name} style={{ width: "100%", height: "150px", objectFit: "cover" }} />
             <h3>{product.name} - ${product.price}</h3>
             <Button type="primary"
-         onClick={() => {
+         onClick={async () => {
             dispatch(addItem({ ...product, quantity: 1 })); 
-            navigate("/cart-management/cart"); 
+         
+            if (userId) {
+              await createNewCartFireSore(db, userId, product);
+            }
           }}
              >
              Add to Cart 

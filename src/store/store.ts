@@ -4,6 +4,7 @@ import { counterReducer } from "./counter.slice";
 import { toggleReducer } from "./themeSlice";
 import { todoReducer } from "./todoSlice";
 import { cartReducer } from "./cartslice";
+import { sessionReducer } from "./session";
 
 const store = configureStore({
     reducer:{
@@ -11,7 +12,8 @@ const store = configureStore({
         counter:counterReducer,
         theme:toggleReducer,
         todo: todoReducer,
-        cart:cartReducer
+        cart:cartReducer,
+        session:sessionReducer
     }
 })
 

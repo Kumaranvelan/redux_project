@@ -1,4 +1,4 @@
-import { Button, Form, Input, notification, UploadFile } from "antd"
+import { Button, Card, Col, Form, Input, notification, Row, Typography, UploadFile } from "antd"
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useSSR } from "react-i18next";
@@ -7,10 +7,12 @@ import { auth } from "../environment/environment";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FileUpload } from "../file-upload";
 import { fileUploadContactConfig } from "../file-upload/types";
+import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 
 
 export const Register:React.FC =() =>{
 
+    const { Title } = Typography;
     const [form] = Form.useForm();
     const storage = getStorage();
     const navigate = useNavigate();
@@ -20,11 +22,11 @@ export const Register:React.FC =() =>{
 
     const handleSubmit = async () => {
         try {
-          setLoading(true);
+         
           const values = await form.validateFields();
-      
+      setLoading(true);
           // Register user
-          const userCredential = await createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
             auth,
             values?.email,
             values?.password
@@ -39,7 +41,6 @@ export const Register:React.FC =() =>{
             type: file.type,
           }));
       
-          // You could now send `uploadedFiles` to Firestore or your backend for saving
           console.log("Uploaded Files:", uploadedFiles);
       
           notification.success({
@@ -55,38 +56,71 @@ export const Register:React.FC =() =>{
             duration: 3,
           });
         } finally {
-          form.resetFields();
-          setFiles([]);
-          setLoading(false);
+            navigate("/content");
+
         }
       };
       
     return(
         <>
-        <Form form={form} onFinish={handleSubmit}>
-            <Form.Item label="Name" name="name">
-                <Input/>
-            </Form.Item>
-            <Form.Item label="Email" name="email">
-                <Input/>
-            </Form.Item>
-            <Form.Item label="Password" name="password">
-                <Input/>
-            </Form.Item>
-            <Form.Item label="Confirm Password" name="confirmpassword">
-                <Input/>
-            </Form.Item>
-            <Form.Item label="File Upload" name="file">
-                <FileUpload
-                      fileConfig={fileUploadContactConfig}
-                        storage={storage}
-                        setNewFileInfoList={setFiles}
-                        oldFileInfoList={files}
-                />
-            </Form.Item>
-            <Button htmlType="submit" type="primary" >Submit</Button>
+       <Row justify="center" style={{ marginTop: 50 }}>
+    <Col xs={24} sm={18} md={12} lg={10}>
+      <Card
+        title={<Title level={3}>Register</Title>}
+        bordered={false}
+        style={{ borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+      >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Enter your name" />
+          </Form.Item>
 
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ type: "email", message: "Invalid email!" }, { required: true, message: "Please enter your email" }]}
+          >
+            <Input prefix={<MailOutlined />} placeholder="Enter your email" />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please enter a password" }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="Enter your password" />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirm Password"
+            name="confirmpassword"
+            rules={[{ required: true, message: "Please confirm your password" }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="Confirm your password" />
+          </Form.Item>
+
+          <Form.Item label="File Upload" name="file">
+            <FileUpload
+              fileConfig={fileUploadContactConfig}
+              storage={storage}
+              setNewFileInfoList={setFiles}
+              oldFileInfoList={files}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button htmlType="submit" type="primary" block loading={loading}>
+              Submit
+            </Button>
+          </Form.Item>
         </Form>
+      </Card>
+    </Col>
+  </Row>
         </>
     )
 }
