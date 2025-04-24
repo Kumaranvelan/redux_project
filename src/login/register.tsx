@@ -57,7 +57,6 @@ export const Register:React.FC =() =>{
           });
         } finally {
             navigate("/content");
-
         }
       };
       

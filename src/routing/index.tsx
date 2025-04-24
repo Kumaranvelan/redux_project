@@ -36,12 +36,12 @@ return (
   />
 
   {/* Register route (optional guard) */}
-  {/* <Route
+  <Route
     path="/register"
     element={
       isAuthenticated ? <Navigate to="/content" /> : <Register />
     }
-  /> */}
+  />
 
   {/* Protected route example */}
   <Route
@@ -52,7 +52,6 @@ return (
       </PrivateRoute>
     }
   />
-
        <Route path="/cart-management/integrate" element={<Integrate/>} />
        <Route path="/cart-management/cart" element={<Cart/>} />
        <Route path="/cart-management/productlist" element={<ProductList/>} />

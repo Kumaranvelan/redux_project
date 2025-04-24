@@ -17,6 +17,7 @@ interface Formprops {
 
 export const ListPage: React.FC = () => {
     const [form] = Form.useForm();
+    const port = "http://localhost:3000/api/user"
     const [formData, setFormData] = useState<Formprops[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [editingUser,setEditingUsers ] = useState<Formprops | null>(null);
@@ -93,7 +94,7 @@ export const ListPage: React.FC = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const { data } = await axios.get("http://localhost:3000/api/users");
+            const { data } = await axios.get(`${port}`);
             setFormData(data);
         } catch (error) {
             message.error("Failed to fetch users");
@@ -115,14 +116,14 @@ export const ListPage: React.FC = () => {
         try {
             if (editingUser) {
                 // Update existing user
-                const { data } = await axios.put(`http://localhost:3000/api/user/${editingUser._id}`, values);
+                const { data } = await axios.put(`${port}/${editingUser._id}`, values);
                 setFormData((prevData) =>
                     prevData.map(user => (user._id === editingUser._id ? data.user : user))
                 );
                 message.success("User updated successfully!");
             } else {
                 // Create new user
-                const { data } = await axios.post("http://localhost:3000/api/user", values);
+                const { data } = await axios.post(`${port}`, values);
                 setFormData([...formData, data.user]);
                 message.success("User added successfully!");
             }
