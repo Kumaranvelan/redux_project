@@ -131,8 +131,8 @@ export const ListPage: React.FC = () => {
             form.resetFields();
             setEditingUsers(null); // Reset editing state after submission
     
-        } catch (error: any) {
-            message.error("Error during user creation/update");
+        } catch (error :any) {
+            message.error("Error during user creation/update", error);
         }
     };
     

@@ -58,6 +58,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         })
       );
       setFileList(getFilesWithUrl);
+      console.log('dsfsdf',getFilesWithUrl)
     };
 
     loadFiles();
