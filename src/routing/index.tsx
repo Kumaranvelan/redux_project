@@ -12,6 +12,7 @@ import ProductList from "../cart-management/productlist"
 import { Register } from "../login/register"
 import { useAppSelector } from "../store/hook"
 import { PrivateRoute } from "./private-routing"
+import Layout from "../layout"
 
 export const AppRouter:React.FC =() =>{
  
@@ -20,6 +21,7 @@ export const AppRouter:React.FC =() =>{
 return (
     <>
        <Routes>
+            <Route path="/" element={<Layout/>} />
        <Route
     path="/"
     element={
@@ -62,6 +64,7 @@ return (
       <Route path ="/increase" element={<Increment/>} />
       <Route path ="/theme" element={<ThemeSwitch/>} />
       <Route path="/list" element={<ListPage/>} />
+     
     </Routes>
     </>
 )
